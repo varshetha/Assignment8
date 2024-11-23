@@ -14,7 +14,6 @@ function fetchRecipes() {
 function displayRecipes(recipes) {
   const recipeList = document.getElementById("recipe-list");
   recipeList.innerHTML = ""; // Clear existing items
-  console.log("Displaying recipes:", recipes); // Debugging log
   recipes.forEach((recipe) => {
     const li = document.createElement("li");
     li.innerHTML = `
@@ -62,6 +61,8 @@ function addRecipe(event) {
   const recipeName = document.getElementById("recipe-name").value;
   const ingredients = document.getElementById("recipe-ingredients").value;
   const instructions = document.getElementById("recipe-instructions").value;
+  const prepTime = document.getElementById("recipe-prep-time").value;
+  const cookTime = document.getElementById("recipe-cook-time").value;
   const tags = document.getElementById("recipe-tags").value;
 
   // Validate input fields with regular expressions
@@ -73,23 +74,23 @@ function addRecipe(event) {
     alert("Ingredients can only contain alphabets, spaces, and commas.");
     return;
   }
-  if (!alphaRegex.test(instructions)) {
-    alert("Instructions can only contain alphabets and spaces.");
+  if (!instructions.trim()) {
+    alert("Instructions cannot be empty.");
     return;
   }
-  if (!alphaRegex.test(tags)) {
-    alert("Tags can only contain alphabets, spaces, and commas.");
+  if (!prepTime || !cookTime) {
+    alert("Prep time and Cook time are required.");
     return;
   }
 
   const newRecipe = {
     id: Date.now().toString(), // Unique ID for the recipe
     name: recipeName,
-    ingredients: ingredients.split(","),
-    instructions: instructions,
-    prepTime: document.getElementById("recipe-prep-time").value,
-    cookTime: document.getElementById("recipe-cook-time").value,
-    tags: tags.split(","),
+    ingredients: ingredients.split(",").map((item) => item.trim()),
+    instructions: instructions.trim(),
+    prepTime: prepTime,
+    cookTime: cookTime,
+    tags: tags ? tags.split(",").map((tag) => tag.trim()) : [],
   };
 
   // Save to localStorage
@@ -100,19 +101,11 @@ function addRecipe(event) {
   console.log("New Recipe Added:", newRecipe); // Debugging log
   console.log("All Recipes:", recipes); // Debugging log
 
-  // Show success message
-  const successMessage = document.getElementById("success-message");
-  successMessage.innerHTML = "Recipe successfully added!";
-  successMessage.style.display = "block";
+  // Show success alert
+  alert("Recipe added successfully!");
 
-  // Refresh homepage recipe list without delay
-  displayRecipes(recipes);
-
-  // Optionally, hide the success message after 3 seconds
-  setTimeout(() => {
-    successMessage.style.display = "none";
-    window.location.href = "index.html"; // Redirect to home page
-  }, 3000); // 3 seconds delay
+  // Redirect to home page after adding the recipe
+  window.location.href = "index.html"; // Redirect to homepage
 }
 
 // Function to fetch recipe details
