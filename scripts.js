@@ -105,6 +105,9 @@ function addRecipe(event) {
   successMessage.innerHTML = "Recipe successfully added!";
   successMessage.style.display = "block";
 
+  // Refresh homepage recipe list without delay
+  displayRecipes(recipes);
+
   // Optionally, hide the success message after 3 seconds
   setTimeout(() => {
     successMessage.style.display = "none";
