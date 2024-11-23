@@ -40,7 +40,7 @@ function deleteRecipe(recipeId) {
   localStorage.setItem("recipes", JSON.stringify(updatedRecipes));
 
   alert("Recipe deleted successfully");
-  displayRecipes(updatedRecipes); // Refresh the home page
+  fetchRecipes(); // Refresh the recipe list dynamically
 }
 
 // Function to pre-fill form for editing
@@ -105,17 +105,14 @@ function addRecipe(event) {
   successMessage.innerHTML = "Recipe successfully added!";
   successMessage.style.display = "block";
 
-  // Refresh recipe list dynamically
-  displayRecipes(recipes);
-
   // Reset form
   document.getElementById("recipe-form").reset();
 
-  // Optionally, hide the success message and redirect after 3 seconds
+  // Hide the success message and redirect after 3 seconds
   setTimeout(() => {
     successMessage.style.display = "none";
     window.location.href = "index.html"; // Redirect to home page
-  }, 3000); // 3 seconds delay
+  }, 3000);
 }
 
 // Function to fetch recipe details
