@@ -105,7 +105,13 @@ function addRecipe(event) {
   successMessage.innerHTML = "Recipe successfully added!";
   successMessage.style.display = "block";
 
-  // Optionally, hide the success message after 3 seconds
+  // Refresh recipe list dynamically
+  displayRecipes(recipes);
+
+  // Reset form
+  document.getElementById("recipe-form").reset();
+
+  // Optionally, hide the success message and redirect after 3 seconds
   setTimeout(() => {
     successMessage.style.display = "none";
     window.location.href = "index.html"; // Redirect to home page
