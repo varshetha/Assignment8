@@ -3,28 +3,11 @@ const apiUrl = "https://recipeall.free.beeceptor.com/recipe"; // Replace with yo
 // Regular Expression for alphabetic input (only letters, spaces, and commas allowed)
 const alphaRegex = /^[A-Za-z\s,]+$/;
 
-// Function to fetch recipes from Beceptor API
-async function fetchFromApi() {
-  try {
-    const response = await fetch(apiUrl);
-    const apiRecipes = await response.json(); // Assuming the data returned is in JSON format
-    console.log("Fetched recipes from Beceptor:", apiRecipes); // Debugging log
-    return apiRecipes;
-  } catch (error) {
-    console.error("Error fetching recipes from Beceptor:", error);
-    return []; // Return empty array if error occurs
-  }
-}
-
-// Function to fetch recipes from localStorage and display them
+// Function to fetch recipes
 function fetchRecipes() {
-  const localRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
-  console.log("Fetched recipes from localStorage:", localRecipes); // Debugging log
-
-  fetchFromApi().then(apiRecipes => {
-    const allRecipes = [...apiRecipes, ...localRecipes]; // Combine Beceptor and localStorage recipes
-    displayRecipes(allRecipes); // Pass combined data to displayRecipes
-  });
+  const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
+  console.log("Fetched recipes from localStorage:", recipes); // Debugging log
+  displayRecipes(recipes);
 }
 
 // Function to display recipes on the homepage
@@ -32,7 +15,6 @@ function displayRecipes(recipes) {
   const recipeList = document.getElementById("recipe-list");
   recipeList.innerHTML = ""; // Clear existing items
   console.log("Displaying recipes:", recipes); // Debugging log
-
   recipes.forEach((recipe) => {
     const li = document.createElement("li");
     li.innerHTML = `
@@ -80,8 +62,6 @@ function addRecipe(event) {
   const recipeName = document.getElementById("recipe-name").value;
   const ingredients = document.getElementById("recipe-ingredients").value;
   const instructions = document.getElementById("recipe-instructions").value;
-  const prepTime = document.getElementById("recipe-prep-time").value;
-  const cookTime = document.getElementById("recipe-cook-time").value;
   const tags = document.getElementById("recipe-tags").value;
 
   // Validate input fields with regular expressions
@@ -93,23 +73,23 @@ function addRecipe(event) {
     alert("Ingredients can only contain alphabets, spaces, and commas.");
     return;
   }
-  if (!instructions.trim()) {
-    alert("Instructions cannot be empty.");
+  if (!alphaRegex.test(instructions)) {
+    alert("Instructions can only contain alphabets and spaces.");
     return;
   }
-  if (!prepTime || !cookTime) {
-    alert("Prep time and Cook time are required.");
+  if (!alphaRegex.test(tags)) {
+    alert("Tags can only contain alphabets, spaces, and commas.");
     return;
   }
 
   const newRecipe = {
     id: Date.now().toString(), // Unique ID for the recipe
     name: recipeName,
-    ingredients: ingredients.split(",").map((item) => item.trim()),
-    instructions: instructions.trim(),
-    prepTime: prepTime,
-    cookTime: cookTime,
-    tags: tags ? tags.split(",").map((tag) => tag.trim()) : [],
+    ingredients: ingredients.split(","),
+    instructions: instructions,
+    prepTime: document.getElementById("recipe-prep-time").value,
+    cookTime: document.getElementById("recipe-cook-time").value,
+    tags: tags.split(","),
   };
 
   // Save to localStorage
@@ -120,11 +100,16 @@ function addRecipe(event) {
   console.log("New Recipe Added:", newRecipe); // Debugging log
   console.log("All Recipes:", recipes); // Debugging log
 
-  // Show success alert
-  alert("Recipe added successfully!");
+  // Show success message
+  const successMessage = document.getElementById("success-message");
+  successMessage.innerHTML = "Recipe successfully added!";
+  successMessage.style.display = "block";
 
-  // Redirect to home page after adding the recipe
-  window.location.href = "index.html"; // Redirect to homepage
+  // Optionally, hide the success message after 3 seconds
+  setTimeout(() => {
+    successMessage.style.display = "none";
+    window.location.href = "index.html"; // Redirect to home page
+  }, 3000); // 3 seconds delay
 }
 
 // Function to fetch recipe details
