@@ -3,17 +3,36 @@ const apiUrl = "https://recipeall.free.beeceptor.com/recipe"; // Replace with yo
 // Regular Expression for alphabetic input (only letters, spaces, and commas allowed)
 const alphaRegex = /^[A-Za-z\s,]+$/;
 
-// Function to fetch recipes
+// Function to fetch recipes from Beceptor API
+async function fetchFromApi() {
+  try {
+    const response = await fetch(apiUrl);
+    const apiRecipes = await response.json(); // Assuming the data returned is in JSON format
+    console.log("Fetched recipes from Beceptor:", apiRecipes); // Debugging log
+    return apiRecipes;
+  } catch (error) {
+    console.error("Error fetching recipes from Beceptor:", error);
+    return []; // Return empty array if error occurs
+  }
+}
+
+// Function to fetch recipes from localStorage and display them
 function fetchRecipes() {
-  const recipes = JSON.parse(localStorage.getItem("recipes")) || [];
-  console.log("Fetched recipes from localStorage:", recipes); // Debugging log
-  displayRecipes(recipes);
+  const localRecipes = JSON.parse(localStorage.getItem("recipes")) || [];
+  console.log("Fetched recipes from localStorage:", localRecipes); // Debugging log
+
+  fetchFromApi().then(apiRecipes => {
+    const allRecipes = [...apiRecipes, ...localRecipes]; // Combine Beceptor and localStorage recipes
+    displayRecipes(allRecipes); // Pass combined data to displayRecipes
+  });
 }
 
 // Function to display recipes on the homepage
 function displayRecipes(recipes) {
   const recipeList = document.getElementById("recipe-list");
   recipeList.innerHTML = ""; // Clear existing items
+  console.log("Displaying recipes:", recipes); // Debugging log
+
   recipes.forEach((recipe) => {
     const li = document.createElement("li");
     li.innerHTML = `
