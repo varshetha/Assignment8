@@ -15,16 +15,27 @@
     <div id="success-message" style="display:none; color: green; padding: 10px; margin-top: 20px;"></div>
 
     <form id="create-recipe-form" onsubmit="createRecipe(event)">
-        <input type="text" id="recipe-name" placeholder="Recipe Name" required />
-        <input type="text" id="recipe-ingredients" placeholder="Ingredients (comma-separated)" required />
-        <textarea id="recipe-instructions" placeholder="Instructions" required></textarea>
-        <input type="text" id="recipe-prep-time" placeholder="Prep Time" required />
-        <input type="text" id="recipe-cook-time" placeholder="Cook Time" required />
-        <input type="text" id="recipe-tags" placeholder="Tags (comma-separated)" />
-        <button type="submit">Add Recipe</button>
-     </form>
+      <input type="text" id="recipe-name" placeholder="Recipe Name" required oninput="validateTextInput(this)">
+      <input type="text" id="recipe-ingredients" placeholder="Ingredients (comma-separated)" required oninput="validateTextInput(this)">
+      <textarea id="recipe-instructions" placeholder="Instructions" required oninput="validateTextInput(this)"></textarea>
+      <input type="text" id="recipe-prep-time" placeholder="Prep Time (minutes)" required oninput="validateNumberInput(this)">
+      <input type="text" id="recipe-cook-time" placeholder="Cook Time (minutes)" required oninput="validateNumberInput(this)">
+      <input type="text" id="recipe-tags" placeholder="Tags (comma-separated)" oninput="validateTextInput(this)">
+      <button type="submit">Add Recipe</button>
+    </form>
   </main>
-  <script src="scripts.js"></script>
+  <script>
+    function validateTextInput(input) {
+      const textRegex = /^[A-Za-z\s,]*$/;
+      if (!textRegex.test(input.value)) {
+        input.value = input.value.replace(/[^A-Za-z\s,]/g, "");
+        alert("Only letters, spaces, and commas are allowed.");
+      }
+    }
+
+    function validateNumberInput(input) {
+      input.value = input.value.replace(/[^0-9]/g, "");
+    }
+  </script>
 </body>
 </html>
-
